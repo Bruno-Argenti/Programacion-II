@@ -20,6 +20,6 @@ try {
     echo "Transferencia realizada correctamente.";
 } catch (PDOException $e) {
     $pdo->rollBack();
-    echo "Error en la transferencia, se cancelaron los cambios: " . $e->getMessage();
+    echo "Error en la transferencia, cambios cancelados " . $e->getMessage();
 }
 ?>
