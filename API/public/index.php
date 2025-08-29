@@ -2,17 +2,20 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
-use Controlador\DatosController;
-
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+use Controlador\DiscoControlador;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 $app = AppFactory::create();
+$app->addBodyParsingMiddleware();
+$app->addErrorMiddleware(true, true, true);
 
-// Rutas API
-$app->get('/discos', [DatosController::class, 'mostrarDiscos']);
-$app->post('/alta/disco', [DatosController::class, 'altaDisco']);
+//ENDPOINTS PARA ADMINISTRAR CRUD DISCOS
+$app->get('/discos', [DiscoControlador::class, 'mostrarDiscos']);
+$app->get('/discos/{id}', [DiscoControlador::class, 'mostrarDisco']);
+$app->post('/discos/alta/', [DiscoControlador::class, 'altaDisco']);
+$app->put('/discos/modificar/{id}', [DiscoControlador::class, 'actualizarDisco']);
+$app->delete('/discos/baja/{id}', [DiscoControlador::class, 'eliminarDisco']);
 
 $app->run();
+
