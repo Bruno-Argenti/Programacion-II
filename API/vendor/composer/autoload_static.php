@@ -24,6 +24,11 @@ class ComposerStaticInit04586f20128c49d2fe4058bf78d15313
         array (
             'Vista\\' => 6,
         ),
+        'T' => 
+        array (
+            'Tuupola\\Middleware\\' => 19,
+            'Tuupola\\Http\\Factory\\' => 21,
+        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Php80\\' => 23,
@@ -56,6 +61,7 @@ class ComposerStaticInit04586f20128c49d2fe4058bf78d15313
         ),
         'F' => 
         array (
+            'Firebase\\JWT\\' => 13,
             'Fig\\Http\\Message\\' => 17,
             'FastRoute\\' => 10,
         ),
@@ -69,6 +75,16 @@ class ComposerStaticInit04586f20128c49d2fe4058bf78d15313
         'Vista\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Vista',
+        ),
+        'Tuupola\\Middleware\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/tuupola/callable-handler/src',
+            1 => __DIR__ . '/..' . '/tuupola/slim-basic-auth/src',
+            2 => __DIR__ . '/..' . '/tuupola/slim-jwt-auth/src',
+        ),
+        'Tuupola\\Http\\Factory\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/tuupola/http-factory/src',
         ),
         'Symfony\\Polyfill\\Php80\\' => 
         array (
@@ -119,6 +135,10 @@ class ComposerStaticInit04586f20128c49d2fe4058bf78d15313
         'GuzzleHttp\\Psr7\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
+        ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
         'Fig\\Http\\Message\\' => 
         array (
