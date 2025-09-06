@@ -13,7 +13,7 @@ class AuthControlador
     public function __construct($db)
     {
         $this->db = $db;
-        $this->secret = "bruno123"; //Clave para firmar el token
+        $this->secret = "bruno123"; // Clave para firmar el token
     }
 
     public function login(Request $request, Response $response): Response
@@ -42,6 +42,10 @@ class AuthControlador
         $stmt->execute();
         $usuario = $stmt->fetch(\PDO::FETCH_ASSOC);
 
+        if (!$usuario) {
+            return $this->unauthorized($response, "Credenciales inválidas");
+        }
+
         $payload = [
             "iss" => "api.disqueria.local",
             "aud" => "api.disqueria.local",
@@ -65,4 +69,3 @@ class AuthControlador
         return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
     }
 }
-
