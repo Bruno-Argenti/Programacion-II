@@ -14,7 +14,7 @@
         "psr-4": {
             "Controlador\\": "Controlador/",
             "Modelo\\": "Modelo/",
-            "Vista\\": "Vista/"
+            "Middleware\\": "Middleware/"
         }
     }
 }

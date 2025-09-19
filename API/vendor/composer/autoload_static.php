@@ -20,10 +20,6 @@ class ComposerStaticInit04586f20128c49d2fe4058bf78d15313
     );
 
     public static $prefixLengthsPsr4 = array (
-        'V' => 
-        array (
-            'Vista\\' => 6,
-        ),
         'T' => 
         array (
             'Tuupola\\Middleware\\' => 19,
@@ -50,6 +46,7 @@ class ComposerStaticInit04586f20128c49d2fe4058bf78d15313
         'M' => 
         array (
             'Modelo\\' => 7,
+            'Middleware\\' => 11,
         ),
         'L' => 
         array (
@@ -72,10 +69,6 @@ class ComposerStaticInit04586f20128c49d2fe4058bf78d15313
     );
 
     public static $prefixDirsPsr4 = array (
-        'Vista\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/Vista',
-        ),
         'Tuupola\\Middleware\\' => 
         array (
             0 => __DIR__ . '/..' . '/tuupola/callable-handler/src',
@@ -127,6 +120,10 @@ class ComposerStaticInit04586f20128c49d2fe4058bf78d15313
         'Modelo\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modelo',
+        ),
+        'Middleware\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Middleware',
         ),
         'Laminas\\Diactoros\\' => 
         array (

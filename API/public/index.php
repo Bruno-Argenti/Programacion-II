@@ -1,10 +1,15 @@
 <?php
+// SOLO PARA DEBUG 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('log_errors', 1);
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Controlador\DiscoControlador;
 use Controlador\AuthControlador;
 use Modelo\ConexionBD;
+use Middleware\RoleMiddleware;
 use Tuupola\Middleware\JwtAuthentication;
 use Firebase\JWT\JWT;
 
@@ -34,7 +39,10 @@ $app->add(new JwtAuthentication([
     }
 ]));
 
-/* ENDPOINT PÚBLICO que usa Autenticación básica
+
+// RUTAS PÚBLICAS
+
+/* ENDPOINT PÚBLICO - Login con Autenticación Básica
  * Genera y retorna un token para autenticación JWT si las credenciales son correctas */
 $app->post('/login', function (Request $request, Response $response) {
     $db = (new ConexionBD())->getConexion();
@@ -42,102 +50,27 @@ $app->post('/login', function (Request $request, Response $response) {
     return $auth->login($request, $response);
 });
 
+// RUTAS PROTEGIDAS - LECTURA (Todos los roles autenticados)
+
 /* Endpoints que requieren autenticación JWT - Accesibles para TODOS los roles autenticados */
 $app->get('/discos', [DiscoControlador::class, 'mostrarDiscos']);
 $app->get('/discos/{id}', [DiscoControlador::class, 'mostrarDisco']);
 
+
+// RUTAS PROTEGIDAS - ADMINISTRACIÓN (Solo ADMIN)
+
 /* ENDPOINTS CRUD Discos - Requieren autenticación JWT + rol ADMIN (1) */
 $app->post('/discos/alta/', [DiscoControlador::class, 'altaDisco'])
-   ->add(function (Request $request, $handler) {
-       // Obtiene los datos del token (ya validado por JWT)
-       $tokenData = $request->getAttribute('token');
-       
-       // Verifica que existan datos del token
-       if (!$tokenData || !isset($tokenData['data']) || !isset($tokenData['data']['rol'])) {
-           $response = new \Slim\Psr7\Response();
-           $response->getBody()->write(json_encode([
-               'error' => 'Token inválido o incompleto'
-           ], JSON_UNESCAPED_UNICODE));
-           return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
-       }
-
-       // Obtiene el rol del usuario del token
-       $userRole = $tokenData['data']['rol'];
-       
-       // Verifica que el rol del usuario sea ADMIN (1)
-       if ($userRole !== 1) {
-           $response = new \Slim\Psr7\Response();
-           $response->getBody()->write(json_encode([
-               'error' => 'Acceso denegado. Solo los administradores pueden crear discos'
-           ], JSON_UNESCAPED_UNICODE));
-           return $response->withStatus(403)->withHeader('Content-Type', 'application/json');
-       }
-
-       // Si el rol es válido, continúa al controlador
-       return $handler->handle($request);
-   });
+   ->add(new RoleMiddleware([1])); 
 
 $app->put('/discos/modificar/{id}', [DiscoControlador::class, 'actualizarDisco'])
-   ->add(function (Request $request, $handler) {
-       // Obtiene los datos del token (ya validado por JWT)
-       $tokenData = $request->getAttribute('token');
-       
-       // Verifica que existan datos del token
-       if (!$tokenData || !isset($tokenData['data']) || !isset($tokenData['data']['rol'])) {
-           $response = new \Slim\Psr7\Response();
-           $response->getBody()->write(json_encode([
-               'error' => 'Token inválido o incompleto'
-           ], JSON_UNESCAPED_UNICODE));
-           return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
-       }
-
-       // Obtiene el rol del usuario del token
-       $userRole = $tokenData['data']['rol'];
-       
-       // Verifica que el rol del usuario sea ADMIN (1)
-       if ($userRole !== 1) {
-           $response = new \Slim\Psr7\Response();
-           $response->getBody()->write(json_encode([
-               'error' => 'Acceso denegado. Solo los administradores pueden modificar discos'
-           ], JSON_UNESCAPED_UNICODE));
-           return $response->withStatus(403)->withHeader('Content-Type', 'application/json');
-       }
-
-       // Si el rol es válido, continúa al controlador
-       return $handler->handle($request);
-   });
+   ->add(new RoleMiddleware([1])); 
 
 $app->delete('/discos/baja/{id}', [DiscoControlador::class, 'eliminarDisco'])
-   ->add(function (Request $request, $handler) {
-       // Obtiene los datos del token (ya validado por JWT)
-       $tokenData = $request->getAttribute('token');
-       
-       // Verifica que existan datos del token
-       if (!$tokenData || !isset($tokenData['data']) || !isset($tokenData['data']['rol'])) {
-           $response = new \Slim\Psr7\Response();
-           $response->getBody()->write(json_encode([
-               'error' => 'Token inválido o incompleto'
-           ], JSON_UNESCAPED_UNICODE));
-           return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
-       }
+   ->add(new RoleMiddleware([1])); 
 
-       // Obtiene el rol del usuario del token
-       $userRole = $tokenData['data']['rol'];
-       
-       // Verifica que el rol del usuario sea ADMIN (1)
-       if ($userRole !== 1) {
-           $response = new \Slim\Psr7\Response();
-           $response->getBody()->write(json_encode([
-               'error' => 'Acceso denegado. Solo los administradores pueden eliminar discos'
-           ], JSON_UNESCAPED_UNICODE));
-           return $response->withStatus(403)->withHeader('Content-Type', 'application/json');
-       }
 
-       // Si el rol es válido, continúa al controlador
-       return $handler->handle($request);
-   });
-
-/* Captura cualquier excepción no manejada y retorna un error JSON */
+/* Manejo de errores globales: Captura cualquier excepción no manejada y retorna un error en formato JSON */
 try {
     $app->run();
 } catch (Throwable $e) {
