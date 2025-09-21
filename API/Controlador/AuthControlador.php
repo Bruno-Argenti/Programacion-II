@@ -13,7 +13,7 @@ class AuthControlador
     public function __construct($db)
     {
         $this->db = $db;
-        $this->secret = "bruno123"; // Clave para firmar el token
+        $this->secret = $_ENV['JWT_SECRET']; // Clave para firmar el token
     }
 
     public function login(Request $request, Response $response): Response

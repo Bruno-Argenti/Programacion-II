@@ -5,13 +5,17 @@ use PDO;
 use PDOException;
 
 class ConexionBD {
-    private $host = "localhost";
-    private $db_name = "api_disqueria";
-    private $username = "root"; 
-    private $password = "bruno123";     
+    private $host;
+    private $db_name;
+    private $username;
+    private $password;
     private $conn;
 
     public function __construct() {
+        $this->host = $_ENV['DB_HOST'];
+        $this->db_name = $_ENV['DB_NAME'];
+        $this->username = $_ENV['DB_USER'];
+        $this->password = $_ENV['DB_PASS'];
         $this->conectar();
     }
 
@@ -32,3 +36,5 @@ class ConexionBD {
         return $this->conn;
     }
 }
+
+
